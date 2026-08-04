@@ -22,3 +22,9 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Large media files (do NOT store raw videos in Git)
+public/assets/**/*.mp4
+public/assets/**/*.webm
+public/assets/**/*.mov
+public/assets/**/*.avi
