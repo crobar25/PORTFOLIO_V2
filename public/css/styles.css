@@ -3,6 +3,9 @@
     font-family: 'CreatoDisplay-Light';
     color: rgb(0,0,0);
 }
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* 0.6.1 */
+}
 a {
     text-decoration: none;
 }
