@@ -1,6 +1,7 @@
 html {
     scroll-behavior: smooth;
     scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 .header tab {
