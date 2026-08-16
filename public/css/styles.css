@@ -1,16 +1,15 @@
-html {
+.scroll-container {
     scroll-behavior: smooth;
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
-
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* 0.6.1 */
+}
 .header tab {
     background-color: rgb(255,255,255);
     font-family: 'CreatoDisplay-Light';
     color: rgb(0,0,0);
-}
-.no-scrollbar::-webkit-scrollbar {
-  display: none; /* 0.6.1 */
 }
 ul {
     list-style: none;
