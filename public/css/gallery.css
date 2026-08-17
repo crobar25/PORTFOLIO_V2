@@ -173,3 +173,126 @@
   font-family: 'Helvetica'; /* Give your font a name */
   src: url('../assets/fonts/Helvetica.ttf') format('truetype'); /* Path to your file */
 }
+
+/*----------------------PHOTOWALL---------------------------------*/
+
+.photowall-empty {
+  text-align: center;
+  font-family: 'CreatoDisplay-Light';
+  color: gray;
+  padding: 60px 20px;
+}
+.photowall {
+  column-count: 4;
+  column-gap: 6px;
+  width: 100%;
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 0 6px 40px;
+}
+.photowall-img {
+  width: 100%;
+  display: block;
+  margin-bottom: 6px;
+  break-inside: avoid;
+  border-radius: 4px;
+  cursor: zoom-in;
+  transition: opacity 0.2s ease;
+}
+.photowall-img:hover {
+  opacity: 0.85;
+}
+@media (max-width: 1100px) {
+  .photowall { column-count: 3; }
+}
+@media (max-width: 700px) {
+  .photowall { column-count: 2; }
+}
+@media (max-width: 420px) {
+  .photowall { column-count: 1; }
+}
+
+/*----------------------LIGHTBOX---------------------------------*/
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+}
+.lightbox.active {
+  display: flex;
+}
+.lightbox-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.45);
+}
+.lightbox-blur {
+  position: absolute;
+  inset: 0;
+}
+.lightbox-blur > div {
+  position: absolute;
+  inset: 0;
+}
+.lightbox-blur > div:nth-child(1) {
+  backdrop-filter: blur(4px) saturate(140%);
+  -webkit-backdrop-filter: blur(4px) saturate(140%);
+  mask-image: radial-gradient(circle at center, black 0%, black 55%, transparent 80%);
+  -webkit-mask-image: radial-gradient(circle at center, black 0%, black 55%, transparent 80%);
+}
+.lightbox-blur > div:nth-child(2) {
+  backdrop-filter: blur(9px) saturate(140%);
+  -webkit-backdrop-filter: blur(9px) saturate(140%);
+  mask-image: radial-gradient(circle at center, black 0%, black 42%, transparent 67%);
+  -webkit-mask-image: radial-gradient(circle at center, black 0%, black 42%, transparent 67%);
+}
+.lightbox-blur > div:nth-child(3) {
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  mask-image: radial-gradient(circle at center, black 0%, black 30%, transparent 55%);
+  -webkit-mask-image: radial-gradient(circle at center, black 0%, black 30%, transparent 55%);
+}
+.lightbox-blur > div:nth-child(4) {
+  backdrop-filter: blur(26px) saturate(140%);
+  -webkit-backdrop-filter: blur(26px) saturate(140%);
+  mask-image: radial-gradient(circle at center, black 0%, black 18%, transparent 42%);
+  -webkit-mask-image: radial-gradient(circle at center, black 0%, black 18%, transparent 42%);
+}
+.lightbox-blur > div:nth-child(5) {
+  backdrop-filter: blur(40px) saturate(140%);
+  -webkit-backdrop-filter: blur(40px) saturate(140%);
+  mask-image: radial-gradient(circle at center, black 0%, transparent 26%);
+  -webkit-mask-image: radial-gradient(circle at center, black 0%, transparent 26%);
+}
+.lightbox-img {
+  position: relative;
+  max-width: 88vw;
+  max-height: 86vh;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  cursor: default;
+  animation: lightbox-in 0.25s ease;
+}
+@keyframes lightbox-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+.lightbox-close {
+  position: absolute;
+  top: 24px;
+  right: 32px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 40px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 1;
+  font-family: Helvetica;
+}

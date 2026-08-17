@@ -1,3 +1,7 @@
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+}
+
 const hamMenu = document.querySelector('.ham-menu');
 const offScreenMenu = document.querySelector('.off-screen-menu');
 
@@ -6,11 +10,13 @@ hamMenu.addEventListener('click', () => {
     offScreenMenu.classList.toggle('active');
 })
 
-const navbar = document.querySelector('.navbar');
-let lastScrollY = window.scrollY;
+const navbar = document.querySelector('.nav-header');
+const scroller = document.body;
+scroller.scrollTop = 0;
+let lastScrollY = 0;
 
-window.addEventListener('scroll', () => {
-    const currentScrollY = window.scrollY;
+scroller.addEventListener('scroll', () => {
+    const currentScrollY = scroller.scrollTop;
 
     if (currentScrollY < 0) return;
 
@@ -19,5 +25,42 @@ window.addEventListener('scroll', () => {
     } else {
         navbar.classList.remove('hidden');
     }
-    lastScrolY = currentScrollY;
+    lastScrollY = currentScrollY;
 });
+
+const photowall = document.querySelector('.photowall');
+const lightbox = document.getElementById('lightbox');
+
+if (photowall && lightbox) {
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxClose = document.getElementById('lightbox-close');
+
+    const openLightbox = (src, alt) => {
+        lightboxImg.src = src;
+        lightboxImg.alt = alt || '';
+        lightbox.classList.add('active');
+    };
+
+    const closeLightbox = () => {
+        lightbox.classList.remove('active');
+        lightboxImg.src = '';
+    };
+
+    photowall.addEventListener('click', (e) => {
+        if (e.target instanceof HTMLImageElement) {
+            openLightbox(e.target.src, e.target.alt);
+        }
+    });
+
+    lightboxClose.addEventListener('click', closeLightbox);
+
+    lightbox.addEventListener('click', (e) => {
+        if (e.target !== lightboxImg) {
+            closeLightbox();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeLightbox();
+    });
+}

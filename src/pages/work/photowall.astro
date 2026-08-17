@@ -1,0 +1,46 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import fs from 'node:fs';
+import path from 'node:path';
+
+const galleryDir = path.join(process.cwd(), 'public/assets/photowall');
+const imageExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp', '.avif', '.gif']);
+
+const images = fs.existsSync(galleryDir)
+    ? fs.readdirSync(galleryDir)
+        .filter((file) => imageExtensions.has(path.extname(file).toLowerCase()))
+        .sort()
+    : [];
+---
+<Layout title="Connor Ng — Photo Wall" includeGallery>
+    <div class="fullscreen-content">
+        <div class="heading">
+            <span class="title">photo wall</span>
+            <span class="subtext">a growing collection — click any photo to enlarge.</span>
+        </div>
+
+        {images.length > 0 ? (
+            <div class="photowall">
+                {images.map((file) => (
+                    <img
+                        class="photowall-img"
+                        src={`/assets/photowall/${file}`}
+                        alt=""
+                        loading="lazy"
+                    />
+                ))}
+            </div>
+        ) : (
+            <p class="photowall-empty">No photos yet — drop some into <code>public/assets/photowall/</code> and they'll show up here automatically.</p>
+        )}
+    </div>
+
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-scrim"></div>
+        <div class="lightbox-blur" aria-hidden="true">
+            <div></div><div></div><div></div><div></div><div></div>
+        </div>
+        <button class="lightbox-close" id="lightbox-close" aria-label="Close">&times;</button>
+        <img class="lightbox-img" id="lightbox-img" src="" alt="" />
+    </div>
+</Layout>

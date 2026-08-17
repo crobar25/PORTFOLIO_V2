@@ -1,0 +1,81 @@
+---
+interface Props {
+    title?: string;
+    includeGallery?: boolean;
+}
+
+const { title = "Connor Ng", includeGallery = false } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="generator" content={Astro.generator} />
+        <title>{title}</title>
+        <link href="/css/styles.css" rel="stylesheet"/>
+        {includeGallery && <link href="/css/gallery.css" rel="stylesheet"/>}
+        <link href="/css/ham-menu.css" rel="stylesheet"/>
+        <meta name="theme-color" content="#808080" />
+        <script src="/javascript/script.js" defer></script>
+        <link rel="icon" href="/assets/photogallery/NG.png" type="image/png" sizes="32x32">
+    </head>
+    <body>
+        <header class="nav-header">
+            <a class="nav-item" href="/">Connor Ng</a>
+            <nav class="header-nav">
+                <div class="dropdown">
+                    <div class="nav-item">Work</div>
+                    <div class="dropdown-content">
+                        <a class="nav-item drop-link" href="/work/software/">software</a>
+                        <a class="nav-item drop-link" href="/work/video/">photo/video</a>
+                        <a class="nav-item drop-link" href="/work/photowall">photo wall</a>
+                    </div>
+                </div>
+                <a class="nav-item" href="/aboutme">About Me</a>
+            </nav>
+            <div class="off-screen-menu">
+                <ul><li><a href="/">HOME</a></li></ul>
+                <ul><li><a href="/work/software/">SOFTWARE</a></li></ul>
+                <ul><li><a href="/work/video/">PHOTO/VIDEO</a></li></ul>
+                <ul><li><a href="/work/photowall">PHOTO WALL</a></li></ul>
+                <ul><li><a href="/aboutme">ABOUT ME</a></li></ul>
+            </div>
+            <div class="ham-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </header>
+
+        <slot />
+
+        <footer>
+            <div class="info">
+                <div class="left-col-content">
+                    <h2>Let's make cool stuff together...</h2>
+                </div>
+                <div class="right-col-content">
+                    <p>Let's connect!</p>
+                    <a href="https://www.instagram.com/ngconnor_/" target="blank">instagram</a>
+                    <a href="https://www.linkedin.com/in/connor-ng-8b6753342/" target="blank">linkedin</a>
+                </div>
+            </div>
+            <div class="divider"></div>
+            <div class="fineprint">
+                <p>©2026 CONNOR NG.</p>
+                <p>based in New York City.</p>
+            </div>
+            <div class="scroller" data-content="Connor Ng">
+                <div class="track">
+                    <h1 class="scroll-text">Connor Ng</h1>
+                    <h1 class="scroll-text">Connor Ng</h1>
+                </div>
+            </div>
+            
+        </footer>
+        <div class="bottom-glass-blur" aria-hidden="true">
+            <div></div><div></div><div></div><div></div><div></div><div></div>
+        </div>
+    </body>
+</html>
