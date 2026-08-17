@@ -22,12 +22,14 @@ const images = fs.existsSync(galleryDir)
         {images.length > 0 ? (
             <div class="photowall">
                 {images.map((file) => (
-                    <img
-                        class="photowall-img"
-                        src={`/assets/photowall/${file}`}
-                        alt=""
-                        loading="lazy"
-                    />
+                    <div class="photowall-item">
+                        <img
+                            class="photowall-img"
+                            src={`/assets/photowall/${file}`}
+                            alt=""
+                            loading="lazy"
+                        />
+                    </div>
                 ))}
             </div>
         ) : (
