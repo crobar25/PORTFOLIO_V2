@@ -1,31 +1,47 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import fs from 'node:fs';
-import path from 'node:path';
+import { getImage } from 'astro:assets';
 
-const galleryDir = path.join(process.cwd(), 'public/assets/photowall');
-const imageExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp', '.avif', '.gif']);
+const imageModules = import.meta.glob<{ default: ImageMetadata }>(
+    '../../assets/photowall/*.{jpg,jpeg,png,webp,avif,gif}',
+    { eager: true }
+);
 
-const images = fs.existsSync(galleryDir)
-    ? fs.readdirSync(galleryDir)
-        .filter((file) => imageExtensions.has(path.extname(file).toLowerCase()))
-        .sort()
-    : [];
+const images = await Promise.all(
+    Object.entries(imageModules)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(async ([, mod]) => {
+            const source = mod.default;
+            const [thumb, full] = await Promise.all([
+                getImage({ src: source, width: 700, format: 'webp', quality: 78 }),
+                getImage({ src: source, width: 2000, format: 'webp', quality: 88 }),
+            ]);
+            return {
+                thumbSrc: thumb.src,
+                thumbWidth: thumb.attributes.width,
+                thumbHeight: thumb.attributes.height,
+                fullSrc: full.src,
+            };
+        })
+);
 ---
 <Layout title="Connor Ng — Photo Wall" includeGallery>
     <div class="fullscreen-content">
         <div class="heading">
             <span class="title">photo wall</span>
-            <span class="subtext">a growing collection — click any photo to enlarge.</span>
+            <span class="subtext">the world, through my eyes. Click on photos to enlarge!</span>
         </div>
 
         {images.length > 0 ? (
             <div class="photowall">
-                {images.map((file) => (
+                {images.map((image) => (
                     <div class="photowall-item">
                         <img
                             class="photowall-img"
-                            src={`/assets/photowall/${file}`}
+                            src={image.thumbSrc}
+                            data-full={image.fullSrc}
+                            width={image.thumbWidth}
+                            height={image.thumbHeight}
                             alt=""
                             loading="lazy"
                         />
@@ -33,7 +49,7 @@ const images = fs.existsSync(galleryDir)
                 ))}
             </div>
         ) : (
-            <p class="photowall-empty">No photos yet — drop some into <code>public/assets/photowall/</code> and they'll show up here automatically.</p>
+            <p class="photowall-empty">No photos yet — drop some into <code>src/assets/photowall/</code> and they'll show up here automatically.</p>
         )}
     </div>
 

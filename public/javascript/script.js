@@ -48,7 +48,7 @@ if (photowall && lightbox) {
 
     photowall.addEventListener('click', (e) => {
         if (e.target instanceof HTMLImageElement) {
-            openLightbox(e.target.src, e.target.alt);
+            openLightbox(e.target.dataset.full || e.target.src, e.target.alt);
         }
     });
 

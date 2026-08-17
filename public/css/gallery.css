@@ -198,6 +198,7 @@
 }
 .photowall-img {
   width: 100%;
+  height: auto;
   display: block;
   cursor: default;
   transition: transform 0.3s ease;
