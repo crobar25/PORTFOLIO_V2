@@ -181,11 +181,10 @@ hr {
 }
 .dropdown-content {
     position: absolute;
-    padding-top: 30%;
+    padding-top: 40%;
     left: 0;
     display: none;
     margin: auto auto;
-    margin-top:20px;
     opacity: 0;
     transform: translateY(10px);
     transition: opacity 0.3s ease, transform 0.25s ease;
