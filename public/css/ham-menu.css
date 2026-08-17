@@ -1,34 +1,36 @@
 .off-screen-menu {
-    background-color:rgb(238, 238, 238);
+    background-color:rgb(255, 255, 255);
     font-family: CreatoDisplay-regular;
-    height: 100vh;
+    position: absolute;
+    top: 100%;
+    left: 0;
     width: 100%;
-    max-width: 450px;
-    top: 0;
-    position: fixed;
-    right: -500px;
+    max-height: 0;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    justify-content: start;
+    justify-content: center;
     align-items: center;
     text-align: center;
     font-size: 1rem;
-    transition: .3 ease;
-    box-shadow: 5px 0px 10px 0px rgba(0, 0, 0, 0.5);
-    padding-top: 50px;
-    padding-right: 50px;
-    right: -500px;
     opacity: 0;
-    transform: translateX(20px);
     transition:
-        right .35s cubic-bezier(0.22, 1, 0.36, 1),
-        opacity .35s ease,
-        transform .35s cubic-bezier(0.22, 1, 0.36, 1);
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
-  }
+        max-height .4s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity .3s ease;
+}
+.off-screen-menu::-webkit-scrollbar {
+    display: none;
+}
+.off-screen-menu ul {
+    width: 100%;
+    margin: 0;
+    padding: 14px 0;
+    text-align: center;
+}
+.off-screen-menu li {
+    display: flex;
+    justify-content: center;
+}
 .off-screen-menu a {
   color: black;
 }
@@ -36,9 +38,11 @@
   color: black;
 }
 .off-screen-menu.active {
-    right: 0;
+    max-height: 400px;
     opacity: 1;
-    transform: translateX(0);
+}
+body.no-scroll {
+    overflow: hidden;
 }
 
 .ham-menu {
@@ -61,7 +65,7 @@
     position: absolute;
     top: 50%;
     transform: translate(-50%, -50%);
-    transition: .3 ease;
+    transition: transform .3s ease-in-out, top .3s ease-in-out, opacity .3s ease-in-out;
 }
 .ham-menu, 
 .ham-menu span,

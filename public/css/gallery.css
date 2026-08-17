@@ -183,6 +183,7 @@
   padding: 60px 20px;
 }
 .photowall {
+  box-sizing: border-box;
   column-count: 4;
   column-gap: 6px;
   width: 100%;
