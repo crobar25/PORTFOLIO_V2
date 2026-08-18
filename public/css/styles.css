@@ -104,6 +104,17 @@ body::-webkit-scrollbar {
     -webkit-mask-image: linear-gradient(to top, black 0%, transparent 40%);
     background: linear-gradient(to top, rgba(255, 255, 255, 0.16), transparent);
 }
+/*----------------------SCROLL GROW---------------------------------*/
+
+.scroll-grow {
+    transform: scale(0.94);
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform;
+}
+.scroll-grow.grown {
+    transform: scale(1);
+}
+
 .fullscreen-content {
     width: 100%;
     height: auto;
@@ -113,6 +124,48 @@ body::-webkit-scrollbar {
     align-content: center;
     background-color: rgb(239, 239, 239);
     margin-top: 30px;
+}
+.intro-layout {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 60px;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 140px 40px 100px;
+    box-sizing: border-box;
+}
+.intro-photo {
+    flex: 0 0 auto;
+    width: 260px;
+    height: 260px;
+}
+.intro-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 4px;
+}
+.intro-text {
+    flex: 1 1 320px;
+    max-width: 380px;
+    font-family: 'CreatoDisplay-Light';
+    font-size: 18px;
+    line-height: 1.5;
+    color: rgb(20, 20, 20);
+}
+.intro-text p {
+    margin: 0 0 20px 0;
+}
+.intro-text p:last-child {
+    margin-bottom: 0;
+}
+.intro-text b {
+    font-family: 'CreatoDisplay-Bold';
+    font-weight: normal;
 }
 .content {
     width: 75%;

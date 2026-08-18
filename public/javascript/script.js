@@ -65,3 +65,21 @@ if (photowall && lightbox) {
         if (e.key === 'Escape') closeLightbox();
     });
 }
+
+const growSelector = '.fullscreen-content > *:not(.photowall):not(.gallery), .photowall-item, .gallery > *, footer > *';
+const growTargets = document.querySelectorAll(growSelector);
+
+if (growTargets.length && 'IntersectionObserver' in window) {
+    growTargets.forEach((el) => el.classList.add('scroll-grow'));
+
+    const growObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('grown');
+                growObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15 });
+
+    growTargets.forEach((el) => growObserver.observe(el));
+}

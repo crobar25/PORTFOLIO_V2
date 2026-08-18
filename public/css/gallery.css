@@ -213,9 +213,6 @@
 @media (max-width: 700px) {
   .photowall { column-count: 2; }
 }
-@media (max-width: 420px) {
-  .photowall { column-count: 1; }
-}
 
 /*----------------------LIGHTBOX---------------------------------*/
 
