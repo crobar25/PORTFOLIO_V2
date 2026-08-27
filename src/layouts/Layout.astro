@@ -35,11 +35,17 @@ const { title = "Connor Ng", includeGallery = false } = Astro.props;
                 <a class="nav-item" href="/aboutme">About Me</a>
             </nav>
             <div class="off-screen-menu">
-                <ul><li><a href="/">HOME</a></li></ul>
-                <ul><li><a href="/work/software/">SOFTWARE</a></li></ul>
-                <ul><li><a href="/work/video/">PHOTO/VIDEO</a></li></ul>
-                <ul><li><a href="/work/photowall">PHOTO WALL</a></li></ul>
-                <ul><li><a href="/aboutme">ABOUT ME</a></li></ul>
+                <div class="menu-header">
+                    <span class="menu-name">Connor Ng</span>
+                    <p class="menu-subtitle">student developer, photographer, videographer, explorer.</p>
+                </div>
+                <nav class="menu-links">
+                    <a class="menu-link" href="/">Home</a>
+                    <a class="menu-link" href="/work/software/">Software</a>
+                    <a class="menu-link" href="/work/video/">Photo/Video</a>
+                    <a class="menu-link" href="/work/photowall">Photo Wall</a>
+                    <a class="menu-link" href="/aboutme">About Me</a>
+                </nav>
             </div>
             <div class="ham-menu">
                 <span></span>

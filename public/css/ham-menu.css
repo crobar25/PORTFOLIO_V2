@@ -1,35 +1,31 @@
 .off-screen-menu {
-    background-color:rgb(255, 255, 255);
-    font-family: CreatoDisplay-regular;
-    position: absolute;
-    top: 100%;
+    background-color: rgb(238, 238, 238);
+    font-family: 'CreatoDisplay-Regular';
+    position: fixed;
+    top: 0;
     left: 0;
+    height: 100vh;
+    height: 100dvh;
     width: 100%;
-    max-height: 0;
-    overflow: hidden;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+    justify-content: space-between;
+    align-items: flex-start;
+    text-align: left;
+    padding: 110px 40px 60px;
     font-size: 1rem;
     opacity: 0;
+    pointer-events: none;
+    transform: translateY(-16px);
     transition:
-        max-height .4s cubic-bezier(0.22, 1, 0.36, 1),
-        opacity .3s ease;
+        opacity .35s ease,
+        transform .35s cubic-bezier(0.22, 1, 0.36, 1);
+    z-index: 9998;
+    overflow: hidden;
 }
 .off-screen-menu::-webkit-scrollbar {
     display: none;
-}
-.off-screen-menu ul {
-    width: 100%;
-    margin: 0;
-    padding: 14px 0;
-    text-align: center;
-}
-.off-screen-menu li {
-    display: flex;
-    justify-content: center;
 }
 .off-screen-menu a {
   color: black;
@@ -38,7 +34,67 @@
   color: black;
 }
 .off-screen-menu.active {
-    max-height: 400px;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+/*----------------------MENU NAME + SUBTITLE---------------------------------*/
+.menu-header {
+    display: flex;
+    flex-direction: column;
+}
+.menu-name {
+    font-family: 'CreatoDisplay-Light';
+    font-size: clamp(2.25rem, 9vw, 3rem);
+    color: rgb(20, 20, 20);
+    line-height: 1.1;
+}
+.menu-subtitle {
+    font-family: 'CreatoDisplay-Regular';
+    font-size: 0.95rem;
+    color: rgb(165, 165, 165);
+    margin: 12px 0 0;
+    max-width: 300px;
+    line-height: 1.5;
+}
+
+/*----------------------MENU LINKS---------------------------------*/
+.menu-links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    width: 100%;
+}
+.menu-link {
+    position: relative;
+    font-family: 'CreatoDisplay-Regular';
+    font-size: 1.7rem;
+    text-transform: capitalize;
+    color: black;
+    text-decoration: none;
+    transition: color .3s ease;
+}
+.menu-link:hover {
+    color: rgb(130, 130, 130);
+}
+
+/*----------------------HOVER DOT (opposite edge of screen)---------------------------------*/
+.hover-dot {
+    position: fixed;
+    right: 30px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: black;
+    opacity: 0;
+    transform: translateY(-50%);
+    transition: opacity .25s ease, top .2s ease;
+    pointer-events: none;
+    z-index: 9999;
+}
+.hover-dot.active {
     opacity: 1;
 }
 body.no-scroll {
@@ -56,6 +112,7 @@ body.no-scroll {
     cursor: pointer;
     right: 0;
     top: 10;
+    z-index: 9999;
 }
 .ham-menu span {
     height: 0.5px;

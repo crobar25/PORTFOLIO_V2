@@ -11,6 +11,25 @@ hamMenu.addEventListener('click', () => {
     document.body.classList.toggle('no-scroll', isOpen);
 })
 
+const menuLinks = document.querySelectorAll('.menu-link');
+
+if (menuLinks.length) {
+    const hoverDot = document.createElement('div');
+    hoverDot.classList.add('hover-dot');
+    document.body.appendChild(hoverDot);
+
+    menuLinks.forEach((link) => {
+        link.addEventListener('mouseenter', () => {
+            const rect = link.getBoundingClientRect();
+            hoverDot.style.top = `${rect.top + rect.height / 2}px`;
+            hoverDot.classList.add('active');
+        });
+        link.addEventListener('mouseleave', () => {
+            hoverDot.classList.remove('active');
+        });
+    });
+}
+
 const navbar = document.querySelector('.nav-header');
 const scroller = document.body;
 scroller.scrollTop = 0;
