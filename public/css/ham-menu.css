@@ -23,6 +23,8 @@
         transform .35s cubic-bezier(0.22, 1, 0.36, 1);
     z-index: 9998;
     overflow: hidden;
+    overflow-y: hidden;
+    height: 100%
 }
 .off-screen-menu::-webkit-scrollbar {
     display: none;
