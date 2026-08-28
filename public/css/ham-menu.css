@@ -98,7 +98,14 @@
 .hover-dot.active {
     opacity: 1;
 }
+html.no-scroll {
+    overflow: hidden;
+}
 body.no-scroll {
+    position: fixed;
+    left: 0;
+    right: 0;
+    width: 100%;
     overflow: hidden;
 }
 

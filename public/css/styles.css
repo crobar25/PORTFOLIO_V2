@@ -32,6 +32,8 @@ body::-webkit-scrollbar {
 .nav-header {
     padding: 20px 30px;
     position: fixed;
+    top: 0;
+    left: 0;
     z-index: 9999;
     width: 100%;
 	display: flex;

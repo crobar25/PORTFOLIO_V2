@@ -5,10 +5,30 @@ if ('scrollRestoration' in history) {
 const hamMenu = document.querySelector('.ham-menu');
 const offScreenMenu = document.querySelector('.off-screen-menu');
 
+let lockedScrollY = 0;
+
+function lockPageScroll() {
+    lockedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+    document.documentElement.classList.add('no-scroll');
+    document.body.classList.add('no-scroll');
+    document.body.style.top = `-${lockedScrollY}px`;
+}
+
+function unlockPageScroll() {
+    document.documentElement.classList.remove('no-scroll');
+    document.body.classList.remove('no-scroll');
+    document.body.style.top = '';
+    window.scrollTo(0, lockedScrollY);
+}
+
 hamMenu.addEventListener('click', () => {
     const isOpen = hamMenu.classList.toggle('active');
     offScreenMenu.classList.toggle('active');
-    document.body.classList.toggle('no-scroll', isOpen);
+    if (isOpen) {
+        lockPageScroll();
+    } else {
+        unlockPageScroll();
+    }
 })
 
 const menuLinks = document.querySelectorAll('.menu-link');
@@ -31,12 +51,10 @@ if (menuLinks.length) {
 }
 
 const navbar = document.querySelector('.nav-header');
-const scroller = document.body;
-scroller.scrollTop = 0;
-let lastScrollY = 0;
+let lastScrollY = window.scrollY || 0;
 
-scroller.addEventListener('scroll', () => {
-    const currentScrollY = scroller.scrollTop;
+window.addEventListener('scroll', () => {
+    const currentScrollY = window.scrollY;
 
     if (currentScrollY < 0) return;
 
