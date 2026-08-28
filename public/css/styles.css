@@ -22,7 +22,7 @@ a {
 body {
     background-color:white(255, 0, 0);
     margin: 0 0;
-    height: 100vh;
+    min-height: 100vh;
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
