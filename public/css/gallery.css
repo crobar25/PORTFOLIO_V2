@@ -354,6 +354,13 @@
 
 .role-viewport {
   position: relative;
+  /* font-size lives here (not on .role-word) so the viewport's height and each
+     word's line-height resolve from the exact same 1.5em — otherwise the two
+     compute against different font-sizes and the parked word's translateY(-100%)
+     no longer lines up with the viewport edge, leaving a sliver of it visible. */
+  font-family: 'CreatoDisplay-Regular';
+  font-size: clamp(15px, 2vw, 20px);
+  line-height: 1.5em;
   height: 1.5em;
   min-width: 230px;
   overflow: hidden;
@@ -363,9 +370,7 @@
   position: absolute;
   inset: 0;
   display: block;
-  font-family: 'CreatoDisplay-Regular';
-  font-size: clamp(15px, 2vw, 20px);
-  line-height: 1.5em;
+  font: inherit;
   color: rgb(100, 100, 100);
   text-transform: lowercase;
   text-align: center;

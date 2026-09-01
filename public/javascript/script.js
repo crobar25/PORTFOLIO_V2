@@ -117,21 +117,33 @@ if (roleViewport) {
     let standbyEl = document.getElementById('role-b');
     let idx = 0;
 
+    // Park/land using a measured pixel offset (not translateY(-100%)) so the parked
+    // word's edge lines up exactly with the viewport's clip boundary. A percentage
+    // offset is relative to the word's own rendered box, which can round to a
+    // different pixel than the container's own (independently-rounded) height —
+    // that mismatch is what let a sliver of the parked word peek into view.
+    function step() {
+        return roleViewport.getBoundingClientRect().height;
+    }
+
     activeEl.textContent = roleWords[0];
-    activeEl.style.transform = 'translateY(0%)';
-    standbyEl.style.transform = 'translateY(-100%)';
+    activeEl.style.transform = 'translateY(0px)';
+    standbyEl.style.transform = `translateY(-${step()}px)`;
 
     function tickRole() {
+        const s = step();
         const nextIdx = (idx + 1) % roleWords.length;
         standbyEl.textContent = roleWords[nextIdx];
+        standbyEl.style.transition = 'none';
+        standbyEl.style.transform = `translateY(-${s}px)`;
 
-        // force reflow so the parked (-100%) position is committed before transitioning
+        // force reflow so the parked position above is committed before transitioning
         void standbyEl.offsetWidth;
 
         activeEl.style.transition = `transform 0.7s ${easing}`;
         standbyEl.style.transition = `transform 0.7s ${easing}`;
-        activeEl.style.transform = 'translateY(100%)';
-        standbyEl.style.transform = 'translateY(0%)';
+        activeEl.style.transform = `translateY(${s}px)`;
+        standbyEl.style.transform = 'translateY(0px)';
 
         const outgoingEl = activeEl;
         [activeEl, standbyEl] = [standbyEl, activeEl];
@@ -139,7 +151,7 @@ if (roleViewport) {
 
         setTimeout(() => {
             outgoingEl.style.transition = 'none';
-            outgoingEl.style.transform = 'translateY(-100%)';
+            outgoingEl.style.transform = `translateY(-${step()}px)`;
         }, 720);
     }
 
@@ -249,12 +261,20 @@ if (collage && heroLightbox) {
         activeClone = null;
         activeSource = null;
 
-        clone.addEventListener('transitionend', function handler(e) {
-            if (e.propertyName !== 'transform') return;
-            clone.removeEventListener('transitionend', handler);
+        // Any one of the transitioning properties (top/left/width/height/transform/
+        // box-shadow) can be the first to fire transitionend, so clean up on whichever
+        // arrives first rather than waiting on a specific property that might not be
+        // the one the browser reports — with a timer fallback in case none fire at all
+        // (e.g. reduced-motion disabling transitions).
+        let cleaned = false;
+        const cleanup = () => {
+            if (cleaned) return;
+            cleaned = true;
             clone.remove();
             source.classList.remove('lifted');
-        }, { once: true });
+        };
+        clone.addEventListener('transitionend', cleanup, { once: true });
+        setTimeout(cleanup, 650);
     }
 
     collage.addEventListener('click', (e) => {
@@ -268,10 +288,15 @@ if (collage && heroLightbox) {
 
     heroLightboxClose.addEventListener('click', closePickup);
 
-    heroLightbox.addEventListener('click', (e) => {
-        if (e.target === heroLightbox || e.target.classList.contains('lightbox-scrim') || e.target.classList.contains('lightbox-blur')) {
-            closePickup();
-        }
+    // The blurred backdrop is built from several stacked, unclassed divs (for the
+    // layered blur vignette), so a click anywhere in the backdrop lands on one of
+    // those — not on .lightbox-scrim/.lightbox-blur themselves. The clone image sits
+    // above this element entirely (it's a fixed-position sibling appended to <body>),
+    // so any click that actually reaches heroLightbox is by definition outside the
+    // photo — close on all of them, including ones that bubble up from the close
+    // button itself (harmless, closePickup() is a no-op once already closed).
+    heroLightbox.addEventListener('click', () => {
+        closePickup();
     });
 
     document.addEventListener('keydown', (e) => {
