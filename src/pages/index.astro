@@ -1,8 +1,64 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { getImage } from 'astro:assets';
+
+const photowallModules = import.meta.glob<{ default: ImageMetadata }>(
+    '../assets/photowall/*.{jpg,jpeg,png,webp,avif,gif}',
+    { eager: true }
+);
+
+// Photos for the homepage collage. Swap the `file` values (must match a filename
+// in src/assets/photowall/) and nudge top/left/width/rot to rearrange the layout.
+const collageConfig = [
+    { file: 'DSC03661.jpg',           top: '2%',  left: '4%',  width: '30%', rot: '-7deg', z: 2, ratio: '3 / 2' },
+    { file: 'ALLENLU_VOGUE.jpeg',     top: '24%', left: '37%', width: '25%', rot: '-3deg', z: 4, ratio: '2 / 3' },
+    { file: 'DSC04143.jpg',           top: '0%',  left: '66%', width: '23%', rot: '8deg',  z: 1, ratio: '2 / 3' },
+    { file: 'bigislandddd_2.1.2.jpg', top: '46%', left: '2%',  width: '31%', rot: '6deg',  z: 2, ratio: '16 / 9' },
+    { file: 'DSC04642.jpg',           top: '50%', left: '62%', width: '28%', rot: '10deg', z: 1, ratio: '3 / 2' },
+];
+
+const collageImages = await Promise.all(
+    collageConfig.map(async (item) => {
+        const mod = photowallModules[`../assets/photowall/${item.file}`];
+        const source = mod.default;
+        const [thumb, full] = await Promise.all([
+            getImage({ src: source, width: 900, format: 'webp', quality: 80 }),
+            getImage({ src: source, width: 2200, format: 'webp', quality: 88 }),
+        ]);
+        return { ...item, thumbSrc: thumb.src, fullSrc: full.src };
+    })
+);
+
+const roleWords = ['software development', 'creative direction', 'photographer', 'videographer'];
 ---
-<Layout>
+<Layout includeGallery>
     <div class="fullscreen-content">
+        <section class="hero">
+            <h1 class="hero-name">Connor Ng</h1>
+
+            <div class="hero-role">
+                <span class="sr-only">{roleWords.join(', ')}</span>
+                <div class="role-viewport" aria-hidden="true">
+                    <span class="role-word role-a" id="role-a">{roleWords[0]}</span>
+                    <span class="role-word role-b" id="role-b"></span>
+                </div>
+            </div>
+
+            <div class="collage" role="group" aria-label="Photo collage — click a photo to enlarge it">
+                {collageImages.map((image) => (
+                    <button
+                        type="button"
+                        class="collage-item"
+                        data-full={image.fullSrc}
+                        style={`--top:${image.top};--left:${image.left};--w:${image.width};--rot:${image.rot};--z:${image.z};--ratio:${image.ratio};`}
+                        aria-label="Enlarge photo"
+                    >
+                        <img class="collage-img" src={image.thumbSrc} alt="" loading="eager" />
+                    </button>
+                ))}
+            </div>
+        </section>
+
         <div class="intro-layout">
             <div class="intro-photo">
                 <img src="/assets/photogallery/mephoto.png" alt="Connor Ng">
@@ -12,5 +68,13 @@ import Layout from '../layouts/Layout.astro';
                 <p>His interests lie in <b>software engineering, film, and photography/videography</b>.</p>
             </div>
         </div>
+    </div>
+
+    <div class="lightbox" id="hero-lightbox">
+        <div class="lightbox-scrim"></div>
+        <div class="lightbox-blur" aria-hidden="true">
+            <div></div><div></div><div></div><div></div><div></div>
+        </div>
+        <button class="lightbox-close" id="hero-lightbox-close" aria-label="Close">&times;</button>
     </div>
 </Layout>
