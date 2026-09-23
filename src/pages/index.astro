@@ -7,20 +7,33 @@ const photowallModules = import.meta.glob<{ default: ImageMetadata }>(
     { eager: true }
 );
 
-// Panels on the hero ring. Stills come from src/assets/photowall/ so Astro
-// optimizes them; `video` entries are served straight from /public and play
-// on the ring. Reorder or swap `file` values to change what's on the reel.
+// Panels on the hero ring.
+//
+// Videos point at the PROXIES in /assets/ring/ — 480x270 H.264, no audio,
+// made from the full-res originals in /assets/photogallery/. Two reasons:
+// the ring samples each panel down to about 320px wide anyway, and iOS
+// decodes H.264 in hardware where it decodes VP9/webm in software. The
+// originals stay untouched for the full-size players on the work pages.
+// To re-make a proxy after changing a source:
+//   ffmpeg -i in.webm -an \
+//     -vf "scale=480:270:force_original_aspect_ratio=increase,crop=480:270,fps=24" \
+//     -c:v libx264 -profile:v main -pix_fmt yuv420p -crf 28 -preset slow \
+//     -movflags +faststart out.mp4
+//
+// Stills come from src/assets/photowall/ so Astro optimizes them.
 const ringConfig = [
-    { video: '/assets/photogallery/Post1.webm',href: '/work/video', alt: 'Visual projects reel' },
-    { video: '/assets/photogallery/City.webm', href: '/work/video/', alt: 'Visual projects reel' },
-    { video: '/assets/photogallery/Post2.webm',     href: '/work/video', alt: 'Visual projects reel' },
-    { video: '/assets/photogallery/Tandonzine.webm',           href: '/work/video', alt: 'Visual projects reel' },
-    { video: '/assets/photogallery/Post3.webm', href: '/work/video', alt: 'Visual projects reel' },
-    { video: '/assets/photogallery/Post4.webm',        href: '/work/video', alt: 'Visual projects reel' },
-    { video: '/assets/photogallery/Post5.webm',           href: '/work/video', alt: 'Visual projects reel' },
-    { video: '/assets/photogallery/Bamboo Garden.webm',           href: '/work/video', alt: 'Visual projects reel' },
-    { file: 'DSC05234-6.jpg',         href: '/work/photowall', alt: 'Photography' },
-    { file: 'bananamatchalatte.jpg',  href: '/work/photowall', alt: 'Photography' },
+    { video: '/assets/ring/Post1.mp4',      href: '/work/video', alt: 'Visual projects reel' },
+    { video: '/assets/ring/City.mp4',       href: '/work/video/', alt: 'Visual projects reel' },
+    { video: '/assets/ring/Post2.mp4',      href: '/work/video', alt: 'Visual projects reel' },
+    { video: '/assets/ring/Tandonzine.mp4', href: '/work/video', alt: 'Visual projects reel' },
+    { video: '/assets/ring/Post3.mp4',      href: '/work/video', alt: 'Visual projects reel' },
+    { video: '/assets/ring/Post4.mp4',      href: '/work/video', alt: 'Visual projects reel' },
+    { video: '/assets/ring/Post5.mp4',      href: '/work/video', alt: 'Visual projects reel' },
+    // was 'Bamboo Garden.webm', which isn't in /assets/photogallery — that
+    // panel was 404ing. Swap this for the real file once it's in the repo.
+    { video: '/assets/ring/working.mp4',    href: '/work/video', alt: 'Visual projects reel' },
+    { file: 'DSC05234-6.jpg',        href: '/work/photowall', alt: 'Photography' },
+    { file: 'bananamatchalatte.jpg', href: '/work/photowall', alt: 'Photography' },
 ];
 
 const ringClips = await Promise.all(

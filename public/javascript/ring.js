@@ -10,6 +10,11 @@
  * whole panel mirrors on its own — what a real panel does in 3D space. There
  * is nothing to undo.
  *
+ * Each strip is a wrapper holding its face canvas plus a top rim rotated flat
+ * into the horizontal plane, which gives the panels the thickness of glass.
+ * The camera sits above the ring, so the top rim is the only edge ever in
+ * view — there is no bottom rim to build.
+ *
  * Panels come from data-ring-clips on the stage element (built in
  * src/pages/index.astro so the images go through Astro's optimizer).
  * FALLBACK_CLIPS below is used only if that attribute is missing.
@@ -31,6 +36,7 @@
   var GAP = 0.86;          // fraction of each slot the panel fills
   var ASPECT = 16 / 9;
   var SBW = 64, SBH = 180; // strip canvas backing size
+  var THICKNESS = 0.024;   // pane thickness, as a fraction of panel width
 
   var SPIN_SPEED = 8;      // degrees per second
   var ELEVATION = 24;      // camera above the ring plane
@@ -61,7 +67,7 @@
     var DELTA = SPAN / S;
 
     var tiles = [];
-    var radius = 400, sliceW = 40, tileH = 120;
+    var radius = 400, sliceW = 40, tileH = 120, edgeH = 4;
     var spin = 0, velocity = 0;
 
     // ---------- build ----------
@@ -90,19 +96,32 @@
 
       var strips = [];
       for (var j = 0; j < S; j++) {
+        // The wrapper must stay preserve-3d for the rim to stand up in 3D, so
+        // opacity and filter go on the leaves — either one on the wrapper
+        // would flatten it and lay the rim back into the face.
+        var wrap = document.createElement("div");
+        wrap.className = "ring-strip";
+        wrap.dataset.tile = String(i);
+
         var cv = document.createElement("canvas");
-        cv.className = "ring-strip";
+        cv.className = "ring-face";
         cv.width = SBW;
         cv.height = SBH;
-        cv.dataset.tile = String(i);
         if (j === 0) {
           cv.setAttribute("role", "img");
           cv.setAttribute("aria-label", clip.alt || "Featured work");
         } else {
           cv.setAttribute("aria-hidden", "true");
         }
-        tile.appendChild(cv);
-        strips.push({ el: cv, ctx: cv.getContext("2d") });
+
+        var edge = document.createElement("i");
+        edge.className = "ring-edge";
+        edge.setAttribute("aria-hidden", "true");
+
+        wrap.appendChild(cv);
+        wrap.appendChild(edge);
+        tile.appendChild(wrap);
+        strips.push({ wrap: wrap, el: cv, edge: edge, ctx: cv.getContext("2d") });
       }
 
       ring.appendChild(tile);
@@ -117,21 +136,30 @@
     });
 
     // ---------- layout ----------
+    // Strip placement never changes once sized — only the ring's own rotation
+    // does — so these transforms are written here and not touched per frame.
     function layout() {
       var w = stage.clientWidth || 320;
       // the whole ring, far side included, has to land inside the stage
       var tw = Math.max(80, Math.min(230, w / 4.6));
       tileH = Math.round(tw / ASPECT);
       sliceW = tw / S;
+      edgeH = Math.max(2, Math.round(tw * THICKNESS));
       radius = sliceW / (2 * Math.tan((DELTA * Math.PI / 180) / 2));
 
-      tiles.forEach(function (t) {
+      tiles.forEach(function (t, i) {
         t.dirty = true;
-        t.strips.forEach(function (s) {
-          s.el.style.width = (sliceW + 0.8) + "px";   // hairline overlap, no seams
-          s.el.style.height = tileH + "px";
-          s.el.style.left = (-(sliceW + 0.8) / 2) + "px";
-          s.el.style.top = (-tileH / 2) + "px";
+        var deg = i * SLOT;
+        t.strips.forEach(function (s, j) {
+          var aj = deg + (j + 0.5 - S / 2) * DELTA;
+          s.wrap.style.width = (sliceW + 0.8) + "px";   // hairline overlap, no seams
+          s.wrap.style.height = tileH + "px";
+          s.wrap.style.left = (-(sliceW + 0.8) / 2) + "px";
+          s.wrap.style.top = (-tileH / 2) + "px";
+          s.wrap.style.transform =
+            "rotateY(" + aj.toFixed(3) + "deg) translateZ(" + radius.toFixed(1) +
+            "px) translateY(" + t.dy.toFixed(1) + "px)";
+          s.edge.style.height = edgeH + "px";
         });
       });
     }
@@ -160,6 +188,34 @@
         try {
           ctx.drawImage(m, cx + j * stripW, cy, stripW, ch, 0, 0, SBW, SBH);
         } catch (e) { /* frame not decodable yet */ }
+
+        // A sheen laid across the whole panel, not per strip — the gradient is
+        // offset by this strip's position so it runs continuously and doesn't
+        // band at the seams.
+        var sheen = ctx.createLinearGradient(-j * SBW, 0, (S - j) * SBW, SBH);
+        sheen.addColorStop(0, "rgba(255,255,255,0.16)");
+        sheen.addColorStop(0.42, "rgba(255,255,255,0.02)");
+        sheen.addColorStop(0.72, "rgba(255,255,255,0.05)");
+        sheen.addColorStop(1, "rgba(255,255,255,0.13)");
+        ctx.fillStyle = sheen;
+        ctx.fillRect(0, 0, SBW, SBH);
+
+        // lit top edge, shadowed underside — the face's half of the pane
+        ctx.fillStyle = "rgba(255,255,255,0.8)";
+        ctx.fillRect(0, 0, SBW, 1.5);
+        ctx.fillStyle = "rgba(20,28,36,0.22)";
+        ctx.fillRect(0, SBH - 2.5, SBW, 1);
+        ctx.fillStyle = "rgba(255,255,255,0.4)";
+        ctx.fillRect(0, SBH - 1.5, SBW, 1.5);
+
+        // the outer strips carry the panel's own side edges
+        if (j === 0) {
+          ctx.fillStyle = "rgba(255,255,255,0.55)";
+          ctx.fillRect(0, 0, 1.5, SBH);
+        } else if (j === S - 1) {
+          ctx.fillStyle = "rgba(255,255,255,0.4)";
+          ctx.fillRect(SBW - 1.5, 0, 1.5, SBH);
+        }
       }
     }
 
@@ -190,23 +246,20 @@
 
       for (var i = 0; i < N; i++) {
         var t = tiles[i];
-        var deg = i * SLOT;
-        var phi = ((spin + deg) % 360) * Math.PI / 180;
+        var phi = ((spin + i * SLOT) % 360) * Math.PI / 180;
         var d01 = (Math.cos(phi) + 1) / 2;   // 1 nearest, 0 far side
 
         var op = (0.34 + 0.66 * Math.pow(d01, 0.85)).toFixed(3);
         var filt = "blur(" + ((1 - d01) * 1.8).toFixed(2) + "px) brightness(" +
                    (0.68 + 0.32 * d01).toFixed(3) + ") saturate(" +
                    (0.72 + 0.28 * d01).toFixed(2) + ")";
+        var edgeOp = (0.3 + 0.7 * d01).toFixed(3);
 
         for (var j = 0; j < S; j++) {
           var s = t.strips[j];
-          var aj = deg + (j + 0.5 - S / 2) * DELTA;
-          s.el.style.transform =
-            "rotateY(" + aj.toFixed(3) + "deg) translateZ(" + radius.toFixed(1) +
-            "px) translateY(" + t.dy.toFixed(1) + "px)";
           s.el.style.opacity = op;
           s.el.style.filter = filt;
+          s.edge.style.opacity = edgeOp;
         }
 
         // stills only repaint when the layout changed; video every frame
@@ -259,9 +312,12 @@
       stage.classList.remove("is-dragging");
 
       // a tap, not a drag → open that panel's page
-      if (wasActive && moved < 6 && e.target && e.target.dataset && e.target.dataset.tile) {
-        var clip = CLIPS[parseInt(e.target.dataset.tile, 10)];
-        if (clip && clip.href) window.location.href = clip.href;
+      if (wasActive && moved < 6 && e.target && e.target.closest) {
+        var hit = e.target.closest(".ring-strip");
+        if (hit) {
+          var clip = CLIPS[parseInt(hit.dataset.tile, 10)];
+          if (clip && clip.href) window.location.href = clip.href;
+        }
       }
     });
 
