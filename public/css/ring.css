@@ -1,0 +1,92 @@
+/*----------------------HOME HERO: REEL RING---------------------------------*/
+/* A ring of clips revolving around a vertical axis, seen from above and
+   rolled off the horizontal. Each panel is cut into vertical strips set one
+   step further around the cylinder, so the media bends with the ring instead
+   of reading as a flat-sided polygon. Pairs with /javascript/ring.js. */
+
+.ring-hero {
+  position: relative;
+  z-index: 2;                /* the ring spills over the name below it */
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  /* clears the fixed nav-header */
+  padding: clamp(78px, 9vh, 108px) 0 0;
+  box-sizing: border-box;
+  /* No clipping anywhere on this subtree. ring.js sizes the panels from the
+     stage width (see `tw` in layout()), so the ring's widest apparent extent
+     is roughly 0.7x the stage — it cannot reach the page edges and so cannot
+     cause sideways scroll. Any overflow value other than `visible` here would
+     cut the near rim off, because the camera sits above the ring plane and
+     the near panels are meant to hang below the stage box. */
+  overflow: visible;
+}
+
+/* the near rim of the ring hangs past the stage and over the name */
+.ring-hero + .hero {
+  padding-top: 0;
+  margin-top: -64px;
+}
+
+.ring-stage {
+  position: relative;
+  width: 100%;
+  /* shorter than the ring is tall, on purpose: the near panels drop below
+     this box and overlap what follows */
+  height: clamp(280px, 44vh, 440px);
+  perspective: 1250px;
+  perspective-origin: 50% 40%;
+  overflow: visible;
+  /* vertical panning stays with the page; horizontal belongs to the ring */
+  touch-action: pan-y;
+  cursor: grab;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.ring-stage.is-dragging {
+  cursor: grabbing;
+}
+
+.ring-3d {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.ring-tile {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+}
+
+.ring-strip {
+  position: absolute;
+  display: block;
+  backface-visibility: visible;
+  will-change: transform, opacity;
+}
+
+@media (max-width: 760px) {
+  .ring-hero {
+    padding-top: 76px;
+  }
+  .ring-stage {
+    height: clamp(190px, 30vh, 290px);
+    perspective: 900px;
+  }
+  .ring-hero + .hero {
+    margin-top: -30px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring-3d,
+  .ring-strip {
+    will-change: auto;
+  }
+}

@@ -2,9 +2,10 @@
 interface Props {
     title?: string;
     includeGallery?: boolean;
+    includeRing?: boolean;
 }
 
-const { title = "Connor Ng", includeGallery = false } = Astro.props;
+const { title = "Connor Ng", includeGallery = false, includeRing = false } = Astro.props;
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -15,9 +16,11 @@ const { title = "Connor Ng", includeGallery = false } = Astro.props;
         <title>{title}</title>
         <link href="/css/styles.css" rel="stylesheet"/>
         {includeGallery && <link href="/css/gallery.css" rel="stylesheet"/>}
+        {includeRing && <link href="/css/ring.css" rel="stylesheet"/>}
         <link href="/css/ham-menu.css" rel="stylesheet"/>
         <meta name="theme-color" content="#808080" />
         <script src="/javascript/script.js" defer></script>
+        {includeRing && <script src="/javascript/ring.js" defer></script>}
         <link rel="icon" href="/assets/photogallery/favicon_ng.png" type="image/png" sizes="32x32">
     </head>
     <body>
@@ -78,7 +81,7 @@ const { title = "Connor Ng", includeGallery = false } = Astro.props;
                     <h1 class="scroll-text">Connor Ng</h1>
                 </div>
             </div>
-            
+
         </footer>
         <div class="bottom-glass-blur" aria-hidden="true">
             <div></div><div></div><div></div><div></div><div></div><div></div>
