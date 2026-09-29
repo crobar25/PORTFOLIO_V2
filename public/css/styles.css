@@ -154,7 +154,7 @@ body::-webkit-scrollbar {
 .intro-text {
     flex: 1 1 320px;
     max-width: 380px;
-    font-family: 'CreatoDisplay-Light';
+    font-family: 'Helvetica';
     font-size: 18px;
     line-height: 1.5;
     color: rgb(20, 20, 20);
@@ -232,7 +232,6 @@ hr {
 .dropdown {
     display: inline-block;
     position: relative;
-
 }
 .dropdown-content {
     position: absolute;
@@ -242,6 +241,7 @@ hr {
     margin: auto auto;
     opacity: 0;
     transform: translateY(10px);
+    line-height: 1.2;
     transition: opacity 0.3s ease, transform 0.25s ease;
 }
 
@@ -257,6 +257,7 @@ hr {
   opacity: 0;
   transform: translateY(10px);
   animation: dropdownFade 0.35s ease forwards;
+  width: 200px;
 }
 .dropdown:hover .dropdown-content a:nth-child(1) {
   animation-delay: 0.05s;
@@ -302,7 +303,6 @@ footer {
     margin: none;
     margin-right: 30px;
     gap: 20px;
-    
 }
 @keyframes slide {
   from {
@@ -332,6 +332,12 @@ footer a {
 .right-col-content p {
     margin: 0;
 }
+.content p {
+    text-align: justify;
+}
+.content {
+    width: 50%;
+}
 .left-col-content {
     display: flex;
     flex-direction: column;
@@ -352,7 +358,7 @@ footer p {
     margin-right: 40px;
 }
 .titles {
-    font-family: helvetica;
+    font-family: 'helvetica';
     font-size:50px;
     color: black;
 }
@@ -369,7 +375,7 @@ html, body {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    font-family: CreatoDisplay-light;
+    font-family: 'helvetica';
     color: white;
 }
 .divider {
@@ -379,7 +385,7 @@ html, body {
   align-self: center;
 }
 .location {
-    font-family:'CreatoDisplay-Light';
+    font-family:'helvetica';
     font-size: 12px;
     display: flex;
     flex-direction: row;
